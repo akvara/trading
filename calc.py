@@ -42,6 +42,12 @@ def print_result(dictionary):
         sys.stdout.write("{}\t{}\n".format(int(value), key))
 
 
+def print_report(by, dictionary, sort_column):
+    sys.stdout.write("By {}\n".format(by))
+    print_result(sorted(dictionary.items(), key=operator.itemgetter(sort_column)))
+    sys.stdout.write("-" * 40 + "\n\n")
+
+
 def read_data(input_file):
     with open(input_file, 'r') as csv_input:
         reader = csv.reader(csv_input, delimiter=',', quotechar='"')
@@ -65,20 +71,15 @@ def read_data(input_file):
                 trades_aggregator[ticker] = 0
             profit_aggregator[ticker] += purchase - commission - sale
             trades_aggregator[ticker] += 1
-        sys.stdout.write("By name\n")
-        print_result(sorted(profit_aggregator.items(), key=operator.itemgetter(0)))
-        sys.stdout.write("-" * 50 + "\n\n")
-        sys.stdout.write("By trades\n")
-        print_result(sorted(trades_aggregator.items(), key=operator.itemgetter(1)))
-        sys.stdout.write("-" * 50 + "\n\n")
-        sys.stdout.write("By profit\n")
-        print_result(sorted(profit_aggregator.items(), key=operator.itemgetter(1)))
-        sys.stdout.write("-" * 50 + "\n\n")
+
+        print_report("ticker name", profit_aggregator, 0)
+        print_report("trades", trades_aggregator, 1)
+        print_report("profit", profit_aggregator, 1)
 
         sum = 0
         for key, value in profit_aggregator.items():
             sum += value
-        sys.stdout.write("Total result: {}\n".format(int(sum)))
+        sys.stdout.write("Total result: {}€\n".format(int(sum)))
 
 
 if __name__ == '__main__':
