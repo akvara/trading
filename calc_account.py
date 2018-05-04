@@ -9,6 +9,11 @@ ERRORS = {
     'columns': 'Number of columns must be {}\n(date, ticker, amount, purchase, commission, sale)'.format(NUMBER_OF_COLS)
 }
 OPERATION_TYPES = [
+    # {
+    #     'text': 'UAB NEO FINANCE',
+    #     'key': 'UAB NEO FINANCE',
+    #     'description': 'UAB NEO FINANCE'
+    # },
     {
         'text': 'Lėšų nurašymas: Sąskaitos LT317044064000061387 tvarkymo mokestis už ',
         'key': 'tvarkymo',
@@ -98,7 +103,7 @@ OPERATION_TYPES = [
         'text': 'Indrės Aleksiejūnienės įmonė',
         'key': 'implantavimas',
         'description': 'Implantavimas'
-    }
+    },
 ]
 LINE_LENGTH = 140
 
@@ -133,7 +138,7 @@ def print_result(array):
 
 
 def print_report(dictionary, sort_column):
-    # sys.stdout.write("By {}\n".format(by))
+    sys.stdout.write("-" * 40 + "\n")
     print_result(sorted(dictionary.items(), key=operator.itemgetter(sort_column)))
     # print_result(sorted(dictionary.items(), key=operator.itemgetter(sort_column)))
     sys.stdout.write("-" * 40 + "\n\n")
@@ -158,7 +163,15 @@ def read_data(input_file):
             aggregator[description] += money_in - money_out
 
         print_report(aggregator, 1)
-        # print_result(aggregator)
+
+        total_balance = 0
+        without_trading = 0
+        for item in aggregator.items():
+            total_balance += item[1]
+            if not (item[0] in ['pirkimas' , 'pardavimas']):
+                without_trading += item[1]
+        sys.stdout.write("Total balance: {}€\n".format(int(total_balance)))
+        sys.stdout.write("Without trading: {}€\n\n".format(int(without_trading)))
 
 
 if __name__ == '__main__':
