@@ -46,7 +46,8 @@ def read_data(input_file):
     with open(input_file, 'r') as csv_input:
         reader = csv.reader(csv_input, delimiter=',', quotechar='"')
         line_nr = 0
-        aggregator = dict()
+        profit_aggregator = dict()
+        trades_aggregator = dict()
         for row in reader:
             line_nr += 1
 
@@ -59,20 +60,25 @@ def read_data(input_file):
             purchase = process_currency(row[3])
             commission = process_currency(row[4])
             sale = process_currency(row[5])
-            if ticker not in aggregator:
-                aggregator[ticker] = 0
-            aggregator[ticker] += purchase - commission - sale
+            if ticker not in profit_aggregator:
+                profit_aggregator[ticker] = 0
+                trades_aggregator[ticker] = 0
+            profit_aggregator[ticker] += purchase - commission - sale
+            trades_aggregator[ticker] += 1
         sys.stdout.write("By name\n")
-        print_result(sorted(aggregator.items(), key=operator.itemgetter(0)))
+        print_result(sorted(profit_aggregator.items(), key=operator.itemgetter(0)))
+        sys.stdout.write("-" * 50 + "\n\n")
+        sys.stdout.write("By trades\n")
+        print_result(sorted(trades_aggregator.items(), key=operator.itemgetter(1)))
         sys.stdout.write("-" * 50 + "\n\n")
         sys.stdout.write("By profit\n")
-        print_result(sorted(aggregator.items(), key=operator.itemgetter(1)))
+        print_result(sorted(profit_aggregator.items(), key=operator.itemgetter(1)))
         sys.stdout.write("-" * 50 + "\n\n")
 
         sum = 0
-        for key, value in aggregator.items():
+        for key, value in profit_aggregator.items():
             sum += value
-        sys.stdout.write("Total result: {}\n".format(sum))
+        sys.stdout.write("Total result: {}\n".format(int(sum)))
 
 
 if __name__ == '__main__':
