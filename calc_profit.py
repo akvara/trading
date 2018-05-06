@@ -1,7 +1,6 @@
-import operator
 import sys
 
-from utils import process_currency
+from utils import process_currency, print_report
 # from datetime import datetime
 
 import csv
@@ -29,17 +28,6 @@ def process_name(name):
         replace('AS ', ''). \
         replace('JSC ', ''). \
         replace(' PVA', '')
-
-
-def print_result(dictionary):
-    for (key, value) in dictionary:
-        sys.stdout.write("{}\t{}\n".format(int(value), key))
-
-
-def print_report(by, dictionary, sort_column):
-    sys.stdout.write("By {}\n".format(by))
-    print_result(sorted(dictionary.items(), key=operator.itemgetter(sort_column)))
-    sys.stdout.write("-" * 40 + "\n\n")
 
 
 def read_data(input_file):
