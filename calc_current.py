@@ -52,22 +52,18 @@ def calculate_profit(ticker_ops, date_from, date_to):
     profit = 0
     sold_balance = 0
     for op in ticker_ops:
-        # print(op)
         if date_from <= op.settlement <= date_to and op.op_type == OPERATION_TYPES.SALE:
             started = True
             profit += op.op_sum
             sold_balance += op.quantity
-            # print("balance", sold_balance)
         if started and sold_balance > 0 and op.op_type == OPERATION_TYPES.PURCHASE:
             if sold_balance - op.quantity <= 0:
                 cost = op.op_sum / op.quantity * sold_balance
                 profit -= cost
                 sold_balance -= sold_balance
-                # print("balance", sold_balance)
                 break
             profit -= op.op_sum
             sold_balance -= op.quantity
-            # print("balance", sold_balance)
     return profit, sold_balance
 
 
@@ -122,8 +118,8 @@ if __name__ == '__main__':
     total = 0
 
     profit_aggregator = {}
-    for ticker in data.keys():
-        # ticker = 'IVL1L'
+    # for ticker in data.keys():
+    for ticker in ['GRD1R']:
         profit, balance = calculate_profit(
             sorted(data[ticker], key=lambda operation: operation.date, reverse=True),
             date_from,
@@ -134,6 +130,5 @@ if __name__ == '__main__':
         else:
             profit_aggregator[ticker] = profit
             total += profit
-
     print_report("profit", profit_aggregator, 1)
     sys.stdout.write("Total: {}€\n".format(int(total)))
