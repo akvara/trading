@@ -1,8 +1,8 @@
 import operator
 import sys
-from datetime import datetime
 
 import csv
+from utils import process_currency
 
 NUMBER_OF_COLS = 6
 ERRORS = {
@@ -109,7 +109,7 @@ LINE_LENGTH = 140
 
 
 def data_error(line_nr, row, error_key):
-    sys.stdout.write("error on line {}: {} \nData was: {}\n\n".format(line_nr, ERRORS[error_key], row))
+    sys.stdout.write("Error on line {}: {} \nData was: {}\n\n".format(line_nr, ERRORS[error_key], row))
     sys.exit(-1)
 
 
@@ -121,13 +121,6 @@ def process_description(text):
         except ValueError:
             pass
     return text[:LINE_LENGTH]
-
-
-def process_currency(item, delimiter_thous='.', delimiter_dec=','):
-    value = item.replace(' €', '').replace(delimiter_thous, '').replace(delimiter_dec, '.')
-    if not value:
-        value = 0
-    return float(value)
 
 
 def print_result(array):
@@ -154,7 +147,7 @@ def read_data(input_file):
             if len(row) != NUMBER_OF_COLS:
                 data_error(line_nr, row, 'columns')
 
-            # date = datetime.strptime(row[0], '%Y-%M-%d')
+            # date = datetime.strptime(row[0], '%Y-%m-%d')
             description = process_description(row[1])
             money_out = process_currency(row[2])
             money_in = process_currency(row[3])
@@ -168,7 +161,7 @@ def read_data(input_file):
         without_trading = 0
         for item in aggregator.items():
             total_balance += item[1]
-            if not (item[0] in ['pirkimas' , 'pardavimas']):
+            if not (item[0] in ['pirkimas', 'pardavimas']):
                 without_trading += item[1]
         sys.stdout.write("Total balance: {}€\n".format(int(total_balance)))
         sys.stdout.write("Without trading: {}€\n\n".format(int(without_trading)))

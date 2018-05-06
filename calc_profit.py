@@ -1,6 +1,7 @@
 import operator
 import sys
 
+from utils import process_currency
 # from datetime import datetime
 
 import csv
@@ -12,15 +13,8 @@ ERRORS = {
 
 
 def data_error(line_nr, row, error_key):
-    sys.stdout.write("error on line {}: {} \nData was: {}\n\n".format(line_nr, ERRORS[error_key], row))
+    sys.stdout.write("Error on line {}: {} \nData was: {}\n\n".format(line_nr, ERRORS[error_key], row))
     sys.exit(-1)
-
-
-def process_currency(item, delimiter_thous='.', delimiter_dec=','):
-    value = item.replace(' €', '').replace(delimiter_thous, '').replace(delimiter_dec, '.')
-    if not value:
-        value = 0
-    return float(value)
 
 
 def process_name(name):
@@ -60,7 +54,7 @@ def read_data(input_file):
             if len(row) != NUMBER_OF_COLS:
                 data_error(line_nr, row, 'columns')
 
-            # date = datetime.strptime(row[0], '%Y %M %d')
+            # date = datetime.strptime(row[0], '%Y %m %d')
             ticker = process_name(row[1])
             # amount = row[2]
             purchase = process_currency(row[3])
